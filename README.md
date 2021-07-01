@@ -1,5 +1,5 @@
 # micropython-module
-collect or fork any module for [micropython](https://github.com/micropython/micropython)
+collect or forked any module for [micropython](https://github.com/micropython/micropython)
 
 最近在玩micropython的时候，由于micropython的原生方法缺失，导致某些纯python的模块也无法正常使用，  
 于是就自己收集、fork或者手撸一些模块来使用.  
@@ -9,11 +9,11 @@ collect or fork any module for [micropython](https://github.com/micropython/micr
 when I using micropython, I cannot find any module that i want.  
 so i collect or fork any module for it.  
 but i only test the function i want.  
-if you find something wrong, pls open issue.  
+if you found something wrong, pls commit an [issue](https://github.com/fuhuo/micropython-module/issues/new).  
   
 micropython version: 1.16  
   
-[ping3.py](https://github.com/fuhuo/micropython-module/blob/main/libs/ping3.py): fork by https://github.com/kyan001/ping3  
-[crc32.py](https://github.com/fuhuo/micropython-module/blob/main/libs/crc32.py): fork by https://github.com/slavaromanov/crc32/blob/master/src/python/crc32.py  
-[queue.py](https://github.com/fuhuo/micropython-module/blob/main/libs/queue.py): fork by standard python module  
-[md5.py](https://github.com/fuhuo/micropython-module/blob/main/libs/md5.py): fork by https://github.com/M-Taghizadeh/MD5_Algorithm/blob/master/md5_algorithm.py  
+[ping3.py](https://github.com/fuhuo/micropython-module/blob/main/libs/ping3.py): forked from https://github.com/kyan001/ping3  
+[crc32.py](https://github.com/fuhuo/micropython-module/blob/main/libs/crc32.py): forked from https://github.com/slavaromanov/crc32/blob/master/src/python/crc32.py  
+[queue.py](https://github.com/fuhuo/micropython-module/blob/main/libs/queue.py): forked from standard python module  
+[md5.py](https://github.com/fuhuo/micropython-module/blob/main/libs/md5.py): forked from https://github.com/M-Taghizadeh/MD5_Algorithm/blob/master/md5_algorithm.py  
