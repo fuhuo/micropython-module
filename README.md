@@ -13,5 +13,5 @@ if you find something wrong, pls open issue.
   
 micropython version: 1.16  
   
-ping3.py[https://github.com/fuhuo/micropython-module/libs/ping3.py]: fork by https://github.com/kyan001/ping3  
-crc32.py[https://github.com/fuhuo/micropython-module/libs/crc32]: fork by https://github.com/slavaromanov/crc32/blob/master/src/python/crc32.py  
+[ping3.py](https://github.com/fuhuo/micropython-module/libs/ping3.py): fork by https://github.com/kyan001/ping3  
+[crc32.py](https://github.com/fuhuo/micropython-module/libs/crc32]: fork by https://github.com/slavaromanov/crc32/blob/master/src/python/crc32.py  
