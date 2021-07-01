@@ -15,4 +15,5 @@ micropython version: 1.16
   
 [ping3.py](https://github.com/fuhuo/micropython-module/blob/main/libs/ping3.py): fork by https://github.com/kyan001/ping3  
 [crc32.py](https://github.com/fuhuo/micropython-module/blob/main/libs/crc32.py): fork by https://github.com/slavaromanov/crc32/blob/master/src/python/crc32.py  
-[queue.py](https://github.com/fuhuo/micropython-module/blob/main/libs/queue.py): fork by standard python module
+[queue.py](https://github.com/fuhuo/micropython-module/blob/main/libs/queue.py): fork by standard python module  
+[md5.py](https://github.com/fuhuo/micropython-module/blob/main/libs/md5.py): fork by https://github.com/M-Taghizadeh/MD5_Algorithm/blob/master/md5_algorithm.py  
