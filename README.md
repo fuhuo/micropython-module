@@ -1,5 +1,5 @@
 # micropython-module
-collect or fork any module for micropython
+collect or fork any module for [micropython](https://github.com/micropython/micropython)
 
 最近在玩micropython的时候，由于micropython的原生方法缺失，导致某些纯python的模块也无法正常使用，  
 于是就自己收集、fork或者手撸一些模块来使用.  
