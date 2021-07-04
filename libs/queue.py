@@ -409,8 +409,11 @@ class Semaphore:
     def __exit__(self, t, v, tb):
         self.release()
 
+
 _threading_Lock = Lock
 _threading_Condition = Condition
+_threading_Semaphore = Semaphore
+
 
 try:
     from _queue import Empty
@@ -616,10 +619,6 @@ class Queue:
     def _get(self):
         return self.queue.pop(0)
 
-
-
-
-
 class _PySimpleQueue:
     '''Simple, unbounded FIFO queue.
 
@@ -632,7 +631,7 @@ class _PySimpleQueue:
 
     def __init__(self):
         self._queue = list()
-        self._count = Semaphore(0)
+        self._count = _threading_Semaphore(0)
 
     def put(self, item, block=True, timeout=None):
         '''Put the item on the queue.
