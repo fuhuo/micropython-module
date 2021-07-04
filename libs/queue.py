@@ -328,6 +328,87 @@ class Condition:
 
     notifyAll = notify_all
 
+
+
+class Semaphore:
+    """This class implements semaphore objects.
+
+    Semaphores manage a counter representing the number of release() calls minus
+    the number of acquire() calls, plus an initial value. The acquire() method
+    blocks if necessary until it can return without making the counter
+    negative. If not given, value defaults to 1.
+
+    """
+
+    # After Tim Peters' semaphore class, but not quite the same (no maximum)
+
+    def __init__(self, value=1):
+        if value < 0:
+            raise ValueError("semaphore initial value must be >= 0")
+        self._cond = Condition(Lock())
+        self._value = value
+
+    def acquire(self, blocking=True, timeout=None):
+        """Acquire a semaphore, decrementing the internal counter by one.
+
+        When invoked without arguments: if the internal counter is larger than
+        zero on entry, decrement it by one and return immediately. If it is zero
+        on entry, block, waiting until some other thread has called release() to
+        make it larger than zero. This is done with proper interlocking so that
+        if multiple acquire() calls are blocked, release() will wake exactly one
+        of them up. The implementation may pick one at random, so the order in
+        which blocked threads are awakened should not be relied on. There is no
+        return value in this case.
+
+        When invoked with blocking set to true, do the same thing as when called
+        without arguments, and return true.
+
+        When invoked with blocking set to false, do not block. If a call without
+        an argument would block, return false immediately; otherwise, do the
+        same thing as when called without arguments, and return true.
+
+        When invoked with a timeout other than None, it will block for at
+        most timeout seconds.  If acquire does not complete successfully in
+        that interval, return false.  Return true otherwise.
+
+        """
+        if not blocking and timeout is not None:
+            raise ValueError("can't specify timeout for non-blocking acquire")
+        rc = False
+        endtime = None
+        with self._cond:
+            while self._value == 0:
+                if not blocking:
+                    break
+                if timeout is not None:
+                    if endtime is None:
+                        endtime = _time() + timeout
+                    else:
+                        timeout = endtime - _time()
+                        if timeout <= 0:
+                            break
+                self._cond.wait(timeout)
+            else:
+                self._value -= 1
+                rc = True
+        return rc
+
+    __enter__ = acquire
+
+    def release(self):
+        """Release a semaphore, incrementing the internal counter by one.
+
+        When the counter is zero on entry and another thread is waiting for it
+        to become larger than zero again, wake up that thread.
+
+        """
+        with self._cond:
+            self._value += 1
+            self._cond.notify()
+
+    def __exit__(self, t, v, tb):
+        self.release()
+
 _threading_Lock = Lock
 _threading_Condition = Condition
 
@@ -535,3 +616,73 @@ class Queue:
     def _get(self):
         return self.queue.pop(0)
 
+
+
+
+
+class _PySimpleQueue:
+    '''Simple, unbounded FIFO queue.
+
+    This pure Python implementation is not reentrant.
+    '''
+    # Note: while this pure Python version provides fairness
+    # (by using a threading.Semaphore which is itself fair, being based
+    #  on threading.Condition), fairness is not part of the API contract.
+    # This allows the C version to use a different implementation.
+
+    def __init__(self):
+        self._queue = list()
+        self._count = Semaphore(0)
+
+    def put(self, item, block=True, timeout=None):
+        '''Put the item on the queue.
+
+        The optional 'block' and 'timeout' arguments are ignored, as this method
+        never blocks.  They are provided for compatibility with the Queue class.
+        '''
+        self._queue.append(item)
+        self._count.release()
+
+    def get(self, block=True, timeout=None):
+        '''Remove and return an item from the queue.
+
+        If optional args 'block' is true and 'timeout' is None (the default),
+        block if necessary until an item is available. If 'timeout' is
+        a non-negative number, it blocks at most 'timeout' seconds and raises
+        the Empty exception if no item was available within that time.
+        Otherwise ('block' is false), return an item if one is immediately
+        available, else raise the Empty exception ('timeout' is ignored
+        in that case).
+        '''
+        if timeout is not None and timeout < 0:
+            raise ValueError("'timeout' must be a non-negative number")
+        if not self._count.acquire(block, timeout):
+            raise Empty
+        return self._queue.pop(0)
+
+    def put_nowait(self, item):
+        '''Put an item into the queue without blocking.
+
+        This is exactly equivalent to `put(item)` and is only provided
+        for compatibility with the Queue class.
+        '''
+        return self.put(item, block=False)
+
+    def get_nowait(self):
+        '''Remove and return an item from the queue without blocking.
+
+        Only get an item if one is immediately available. Otherwise
+        raise the Empty exception.
+        '''
+        return self.get(block=False)
+
+    def empty(self):
+        '''Return True if the queue is empty, False otherwise (not reliable!).'''
+        return len(self._queue) == 0
+
+    def qsize(self):
+        '''Return the approximate size of the queue (not reliable!).'''
+        return len(self._queue)
+
+
+SimpleQueue = _PySimpleQueue
